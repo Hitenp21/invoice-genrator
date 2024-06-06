@@ -236,6 +236,7 @@ const handleConfirmDelete = async () => {
                     type="text"
                     name="mobileNo"
                     placeholder="Mobile Number"
+                    maxLength={10}
                     value={formData.mobileNo}
                     onChange={handleChange}
                     className="border-2 w-full border-gray-300 rounded px-3 py-2 mb-2"
@@ -258,6 +259,7 @@ const handleConfirmDelete = async () => {
                     type="text"
                     name="gstnum"
                     placeholder="GST Number"
+                    maxLength={16}
                     value={formData.gstnum}
                     onChange={handleChange}
                     className="border-2 w-full border-gray-300 rounded px-3 py-2 mb-2"

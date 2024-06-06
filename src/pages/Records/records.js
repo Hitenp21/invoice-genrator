@@ -10,10 +10,14 @@ import Header from "./../Home/components/header";
 import api from "../../api";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { PDFViewer } from "@react-pdf/renderer";
+import PdfInvoice from "../../pdfInvoice";
 
 export default function Records() {
   const [isOpen, setIsOpen] = useState(false);
   const [startDate, setStartDate] = useState();
+  const [pdfData, setPdfData] = useState({});
+  const [pdfView, setPdfView] = useState(false);
   const [username, setUserName] = useState();
   const [toDate, setToDate] = useState();
   const [recordsData, setRecordsData] = useState();
@@ -29,22 +33,38 @@ export default function Records() {
     setIsDelete(true);
   };
 
+  const OpenPdfViewer = (record) => {
+    api
+      .get(`/invoice/pdfInvoice/${record._id}`)
+      .then((res) => {
+        setPdfData(res.data);
+        console.log("fetch", res.data);
+        setPdfView(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const closePopup = () => {
     setIsDelete(false);
     setRecordToDelete(null);
     setIsOpen(false);
+    setPdfView(false);
   };
 
   const handleConfirmDelete = () => {
-    api.delete(`/invoice/delete/${recordToDelete._id}`)
-    .then((res)=>{
-      toast.success("Invoice delete successful!");
-      fetchData();
-    }).catch((err)=>{
-      toast.error("Error ! Invoice not delete.");
+    api
+      .delete(`/invoice/delete/${recordToDelete._id}`)
+      .then((res) => {
+        toast.success("Invoice delete successful!");
+        fetchData();
+      })
+      .catch((err) => {
+        toast.error("Error ! Invoice not delete.");
 
-      console.log(err)
-    })
+        console.log(err);
+      });
     closePopup();
   };
 
@@ -65,7 +85,6 @@ export default function Records() {
   };
 
   useEffect(() => {
-    
     fetchData();
   }, [data]);
 
@@ -190,207 +209,247 @@ export default function Records() {
             </Popup>
           )}
         </div>
-        <div>
-          {recordsData?.map((record) => (
-            <div key={record._id} className="m-1 mt-4 p-4 rounded-lg shadow-lg">
-              <div className="flex justify-between ">
-                <button
-                  className="bg-white w-full flex items-center justify-between p-2"
-                  onClick={() => toggleDetails(record._id)}
-                >
-                  <div className="flex items-center ">
-                    <img
-                      className="h-5 w-5 mr-4"
-                      src={
-                        activeRecordId === record._id
-                          ? "/images/dropup.png"
-                          : "/images/dropdown.png"
-                      }
-                      alt={
-                        activeRecordId === record._id
-                          ? "dropup icon"
-                          : "dropdown icon"
-                      }
-                    />
-                    <h3 className="text-dark mt-1">
-                      {record.username}'s Invoices
-                    </h3>
-                  </div>
-                </button>
-                <h5 className="text-dark pt-3 flex-end">
-                  Date : {formatDate(record.date)}
-                </h5>
-                <Link
-                  className="rounded-full font-medium p-3 text-red-500 hover:underline underline-offset-2"
-                  style={{
-                    display: "flex",
-                    // alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onClick={() => openDeletePopup(record)}
-                >
-                  Delete
-                </Link>
-              </div>
 
-              {activeRecordId === record._id && (
-                <>
-                  <div className="w-full my-2">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 divide-y">
-                      <thead className="text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                          <th scope="col" className="px-1 py-3">
-                            Product name
-                          </th>
-                          <th scope="col" className="px-1 py-3">
-                            pcs per box
-                          </th>
-                          <th scope="col" className="px-1 py-3">
-                            box
-                          </th>
-                          <th scope="col" className="px-1 py-3">
-                            Price
-                          </th>
-                          <th scope="col" className="px-1 py-3">
-                            Amount
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {record.products.map((item, index) => (
-                          <tr
-                            key={index}
-                            className={`${
-                              index % 2 === 0
-                                ? "even:bg-gray-50 even:dark:bg-gray-800"
-                                : "odd:bg-white odd:dark:bg-gray-900"
-                            } border-b dark:border-gray-700`}
-                          >
-                            <th
-                              scope="row"
-                              className="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                            >
-                              <input type="text" value={item.name} readOnly />
+        {!pdfView ? (
+          <div>
+            {recordsData?.map((record) => (
+              <div
+                key={record._id}
+                className="m-1 mt-4 p-4 rounded-lg shadow-lg"
+              >
+                <div className="flex justify-between ">
+                  <button
+                    className="bg-white w-full flex items-center justify-between p-2"
+                    onClick={() => toggleDetails(record._id)}
+                  >
+                    <div className="flex items-center ">
+                      <img
+                        className="h-5 w-5 mr-4"
+                        src={
+                          activeRecordId === record._id
+                            ? "/images/dropup.png"
+                            : "/images/dropdown.png"
+                        }
+                        alt={
+                          activeRecordId === record._id
+                            ? "dropup icon"
+                            : "dropdown icon"
+                        }
+                      />
+                      <h3 className="text-dark mt-1">
+                        {record.username}'s Invoices
+                      </h3>
+                    </div>
+                  </button>
+                  <h5 className="text-dark pt-3 flex-end">
+                    Date : {formatDate(record.date)}
+                  </h5>
+                  <Link
+                    className="rounded-full font-medium p-3 text-red-500 hover:underline underline-offset-2"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => openDeletePopup(record)}
+                  >
+                    Delete
+                  </Link>
+                  <Link
+                    className="rounded-full font-medium p-3 text-red-500 hover:underline underline-offset-2"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => OpenPdfViewer(record)}
+                  >
+                    Download
+                  </Link>
+                </div>
+
+                {activeRecordId === record._id && (
+                  <>
+                    <div className="w-full my-2">
+                      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 divide-y">
+                        <thead className="text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                          <tr>
+                            <th scope="col" className="px-1 py-3">
+                              Product name
                             </th>
-                            <td className="px-1 py-4 text-dark">
-                              <input type="number" value={item.dQty} readOnly />
-                            </td>
-                            <td className="px-1 py-4 text-dark">
-                              <input type="number" value={item.qty} readOnly />
-                            </td>
-                            <td className="px-1 py-4 text-dark">
-                              <input
-                                type="number"
-                                value={item.price}
-                                readOnly
-                              />
-                            </td>
-                            <td className="px-1 py-4 flex items-center text-dark">
-                              <input
-                                type="number"
-                                value={item.amount}
-                                readOnly
-                              />
-                            </td>
+                            <th scope="col" className="px-1 py-3">
+                              pcs per box
+                            </th>
+                            <th scope="col" className="px-1 py-3">
+                              box
+                            </th>
+                            <th scope="col" className="px-1 py-3">
+                              Price
+                            </th>
+                            <th scope="col" className="px-1 py-3">
+                              Amount
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {record.products.map((item, index) => (
+                            <tr
+                              key={index}
+                              className={`${
+                                index % 2 === 0
+                                  ? "even:bg-gray-50 even:dark:bg-gray-800"
+                                  : "odd:bg-white odd:dark:bg-gray-900"
+                              } border-b dark:border-gray-700`}
+                            >
+                              <th
+                                scope="row"
+                                className="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                              >
+                                <input type="text" value={item.name} readOnly />
+                              </th>
+                              <td className="px-1 py-4 text-dark">
+                                <input
+                                  type="number"
+                                  value={item.dQty}
+                                  readOnly
+                                />
+                              </td>
+                              <td className="px-1 py-4 text-dark">
+                                <input
+                                  type="number"
+                                  value={item.qty}
+                                  readOnly
+                                />
+                              </td>
+                              <td className="px-1 py-4 text-dark">
+                                <input
+                                  type="number"
+                                  value={item.price}
+                                  readOnly
+                                />
+                              </td>
+                              <td className="px-1 py-4 flex items-center text-dark">
+                                <input
+                                  type="number"
+                                  value={item.amount}
+                                  readOnly
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
 
-                  <div className="flex flex-wrap -mx-2">
-                    <div className="w-1/2 px-2 mb-4 flex justify-end m"></div>
-                    <div className="w-1/2 px-2 mb-4 flex justify-end">
-                      <div className="flex flex-col mx-4">
-                        <h6 className="text-gray-700 uppercase px-2 py-2 mb-2">
-                          Sub Total
-                        </h6>
-                        <h6 className="text-gray-700 uppercase py-2 px-2 mb-2">
-                          GST %
-                        </h6>
-                        <h6 className="text-gray-700 uppercase py-1 px-2 mb-2">
-                          Tax
-                        </h6>
-                        <h6 className="text-gray-700 uppercase px-2 py-2 mb-2">
-                          Remaining Payment
-                        </h6>
-                        <h6 className="text-gray-700 uppercase px-2 py-2 mb-2">
-                          Received Payment
-                        </h6>
-                        <h6 className="text-white bg-dark uppercase rounded px-2 py-2">
-                          Total
-                        </h6>
-                      </div>
-                      <div className="flex flex-col">
-                        <input
-                          type="number"
-                          value={record.subTotal}
-                          className="border border-gray-300 rounded px-3 py-1 mb-2"
-                          readOnly
-                        />
-                        <input
-                          type="number"
-                          value={record.gst}
-                          readOnly
-                          className="border border-gray-300 rounded px-3 py-1 mb-2"
-                        />
-                        <input
-                          type="number"
-                          value={record.tax}
-                          className="border border-gray-300 rounded px-3 py-1 mb-2"
-                          readOnly
-                        />
-                        <input
-                          type="number"
-                          placeholder="0"
-                          value={record.remainingPayment}
-                          className="border border-gray-300 rounded px-3 py-1 mb-2"
-                          readOnly
-                        />
-                        <input
-                          type="number"
-                          value={record.receivedPayment}
-                          readOnly
-                          className="border border-gray-300 rounded px-3 py-1 mb-2"
-                        />
-                        <input
-                          type="number"
-                          value={record.total}
-                          className="text-white bg-dark border border-gray-300 rounded px-3 py-1"
-                          readOnly
-                        />
+                    <div className="flex flex-wrap -mx-2">
+                      <div className="w-1/2 px-2 mb-4 flex justify-end m"></div>
+                      <div className="w-1/2 px-2 mb-4 flex justify-end">
+                        <div className="flex flex-col mx-4">
+                          <h6 className="text-gray-700 uppercase px-2 py-2 mb-2">
+                            Sub Total
+                          </h6>
+                          <h6 className="text-gray-700 uppercase py-2 px-2 mb-2">
+                            GST %
+                          </h6>
+                          <h6 className="text-gray-700 uppercase py-1 px-2 mb-2">
+                            Tax
+                          </h6>
+                          <h6 className="text-gray-700 uppercase px-2 py-2 mb-2">
+                            Remaining Payment
+                          </h6>
+                          <h6 className="text-gray-700 uppercase px-2 py-2 mb-2">
+                            Received Payment
+                          </h6>
+                          <h6 className="text-white bg-dark uppercase rounded px-2 py-2">
+                            Total
+                          </h6>
+                        </div>
+                        <div className="flex flex-col">
+                          <input
+                            type="number"
+                            value={record.subTotal}
+                            className="border border-gray-300 rounded px-3 py-1 mb-2"
+                            readOnly
+                          />
+                          <input
+                            type="number"
+                            value={record.gst}
+                            readOnly
+                            className="border border-gray-300 rounded px-3 py-1 mb-2"
+                          />
+                          <input
+                            type="number"
+                            value={record.tax}
+                            className="border border-gray-300 rounded px-3 py-1 mb-2"
+                            readOnly
+                          />
+                          <input
+                            type="number"
+                            placeholder="0"
+                            value={record.remainingPayment}
+                            className="border border-gray-300 rounded px-3 py-1 mb-2"
+                            readOnly
+                          />
+                          <input
+                            type="number"
+                            value={record.receivedPayment}
+                            readOnly
+                            className="border border-gray-300 rounded px-3 py-1 mb-2"
+                          />
+                          <input
+                            type="number"
+                            value={record.total}
+                            className="text-white bg-dark border border-gray-300 rounded px-3 py-1"
+                            readOnly
+                          />
+                        </div>
                       </div>
                     </div>
+                  </>
+                )}
+              </div>
+            ))}
+            <>
+              {isDelete && (
+                <Popup
+                  open={isDelete}
+                  closeOnDocumentClick
+                  onClose={closePopup}
+                >
+                  <div className="">
+                    <p className="text-gray-700 text-lg m-2 font-medium text-center">
+                      User: {recordToDelete.username}
+                    </p>
+                    <h5 className="text-center">
+                      Confirm You are delete this Invoice!
+                    </h5>
+                    <h5 className="text-center">
+                      Invoice Date : {formatDate(recordToDelete.date)}
+                    </h5>
+
+                    <div className="flex-container">
+                      <button
+                        className="delete-product px-3 m-1 center-button"
+                        onClick={handleConfirmDelete}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                </>
+                </Popup>
               )}
-            </div>
-          ))}
+            </>
+          </div>
+        ) : (
           <>
-            {isDelete && (
-              <Popup open={isDelete} closeOnDocumentClick onClose={closePopup}>
-                <div className="">
-                  <p className="text-gray-700 text-lg m-2 font-medium text-center">
-                    User: {recordToDelete.username}
-                  </p>
-                  <h5 className="text-center">
-                    Confirm You are delete this Invoice!
-                  </h5>
-                  <h5  className="text-center">Invoice Date : {formatDate(recordToDelete.date)}</h5>
-                
-                  <div className="flex-container">
-                    <button
-                      className="delete-product px-3 m-1 center-button"
-                      onClick={handleConfirmDelete}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </Popup>
-            )}
+          <div className="flex justify-end">
+            <button onClick={closePopup} className="w-auto h-10 mb-1 p-2 mr-10 bg-red-500 hover:bg-red-700">
+              Close
+            </button>
+          </div>
+            <PDFViewer width="1000" height="650" className="app">
+              <PdfInvoice data={pdfData} />
+            </PDFViewer>
           </>
-        </div>
+        )}
       </div>
     </div>
   );

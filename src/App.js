@@ -12,6 +12,8 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import api from "./api";
+import PdfInvoice from "./pdfInvoice";
+import { PDFViewer } from "@react-pdf/renderer";
 
 const verifyToken = async (token) => {
   try {
@@ -75,6 +77,7 @@ function App() {
         closeButton={false}
         autoClose={3000}
       />
+     
       <Routes>
         <Route path="/user/*" element={<Home />} />
         <Route path="/login" element={<Login />} />

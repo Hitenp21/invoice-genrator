@@ -80,7 +80,7 @@ const getAllRefUserDAta = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const userId = req.userData.id;
-    const { username, email } = req.body.formData;
+    const { username, email , mobileNo , gstNum , address } = req.body.formData;
 
     if (!username || !email) {
       return res.status(400).json({ message: "Username and email are required" });
@@ -88,7 +88,7 @@ const updateUser = async (req, res) => {
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { username: username, email: email },
+      { username: username, email: email , mobileNo , gstNum, address},
       { new: true }
     );
 
@@ -107,7 +107,7 @@ const updateUser = async (req, res) => {
 const getUser = async(req,res)=>{
   const userId=req.userData.id;
   try {
-    const user = await User.findById(userId).select('username email')
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

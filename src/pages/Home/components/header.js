@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import "./header.css";
 import api from "../../../api";
 import { toast } from "react-toastify";
+import { Popup } from "reactjs-popup";
+import { Link } from "react-router-dom";
 
 export default function Header({ title }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -9,6 +11,25 @@ export default function Header({ title }) {
   const [isEditing, setIsEditing] = useState(false);
   const profileRef = useRef(null);
   const formRef = useRef(null);
+
+  const closePopup = () => {
+    setIsProfileOpen(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    api
+      .put("/api/user/update", { formData })
+      .then((response) => {
+        toast.success("Profile Updated!");
+      })
+      .catch((err) => {
+        toast.error("Profile Not Updated. Please try again.");
+        console.log(err);
+      });
+    setIsEditing(false);
+    setIsProfileOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -38,6 +59,9 @@ export default function Header({ title }) {
         setFormData({
           username: res.data.user.username,
           email: res.data.user.email,
+          gstNum: res.data.user.gstNum,
+          address: res.data.user.address,
+          mobileNo: res.data.user.mobileNo,
         });
       })
       .catch((err) => {
@@ -52,6 +76,7 @@ export default function Header({ title }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData({
       ...formData,
       [name]: value,
@@ -65,7 +90,6 @@ export default function Header({ title }) {
 
   const handleSave = (e) => {
     e.preventDefault();
-    console.log("formdata", formData);
     api
       .put("/api/user/update", { formData })
       .then((response) => {
@@ -187,7 +211,7 @@ export default function Header({ title }) {
             </g>
           </g>
         </svg>
-        {isProfileOpen && (
+        {false && (
           <div className="profile-overlay form-container">
             <form
               ref={formRef}
@@ -231,6 +255,97 @@ export default function Header({ title }) {
               )}
             </form>
           </div>
+        )}
+
+        {isProfileOpen && (
+          <Popup open={isProfileOpen} closeOnDocumentClick onClose={closePopup}>
+            <div className="modal-overlay">
+              <div className="modal-container">
+                <span className="close" onClick={closePopup}>
+                  <Link>&times;</Link>
+                </span>
+                <form onSubmit={handleSubmit}>
+                  <div className="px-4 mb-2 mx-2">
+                    <div className="mb-2 font-medium">User Name *</div>
+                    <input
+                      type="text"
+                      name="username"
+                      placeholder="User Name"
+                      value={formData.username}
+                      onChange={isEditing ? handleChange : undefined}
+                      disabled={!isEditing}
+                      className="form-input border-2 w-full border-gray-300 rounded px-3 py-2 mb-2"
+                    />
+                  </div>
+                  <div className="px-4 mb-2 mx-2">
+                    <div className="mb-2 font-medium">Mobile Number *</div>
+                    <input
+                      type="text"
+                      name="mobileNo"
+                      placeholder="Mobile Number"
+                      maxLength={10}
+                      value={formData.mobileNo}
+                      onChange={isEditing ? handleChange : undefined}
+                      disabled={!isEditing}
+                      className="form-input border-2 w-full border-gray-300 rounded px-3 py-2 mb-2"
+                    />
+                  </div>
+                  <div className="px-4 mb-2 mx-2">
+                    <div className="mb-2 font-medium">Email *</div>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      value={formData.email}
+                      onChange={isEditing ? handleChange : undefined}
+                      disabled={!isEditing}
+                      className="form-input border-2 w-full border-gray-300 rounded px-3 py-2 mb-2"
+                    />
+                  </div>
+                  <div className="px-4 mb-2 mx-2">
+                    <div className="mb-2 font-medium">GST Number</div>
+                    <input
+                      type="text"
+                      name="gstNum"
+                      placeholder="GST Number"
+                      maxLength={16}
+                      value={formData.gstNum}
+                      onChange={isEditing ? handleChange : undefined}
+                      disabled={!isEditing}
+                      className="form-input border-2 w-full border-gray-300 rounded px-3 py-2 mb-2"
+                    />
+                  </div>
+                  <div className="px-4 mx-2">
+                    <div className="mb-2 font-medium">Address</div>
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="Address"
+                      value={formData.address}
+                      onChange={isEditing ? handleChange : undefined}
+                      disabled={!isEditing}
+                      className="form-input border-2 w-full border-gray-300 rounded px-3 py-2 mb-2"
+                    />
+                  </div>
+                  <div className="flex justify-center my-3">
+                    {!isEditing ? (
+                      <button
+                        type="button"
+                        className="profile-btn w-full font-medium h-10"
+                        onClick={handleEdit}
+                      >
+                        Edit
+                      </button>
+                    ) : (
+                      <button type="submit" className="profile-btn">
+                        Save
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </Popup>
         )}
       </div>
     </div>

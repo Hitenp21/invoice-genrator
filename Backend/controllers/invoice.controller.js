@@ -149,9 +149,49 @@ const deleteInvoice = async (req, res) => {
   }
 };
 
+
+const pdfInvoice = async (req, res) => {
+  const invoiceId = req.params.id;
+  const userId = req.userData.id;
+try {
+  const invoice = await Invoice.findById(invoiceId);
+
+  if (!invoice) {
+    return res.status(404).json({ error: "Invoice not found" });
+  }
+
+  const supplier = await User.findById(userId).select("address gstNum username");
+
+  let formattedDate = '';
+  if (invoice.date) {
+    const date = new Date(invoice.date);
+    formattedDate = date.toLocaleDateString('en-GB'); 
+  }
+  
+  const refUser = await RefUser.findById(invoice.user).select("gstnum address -_id");
+  
+  const pdfData = {
+    ...invoice.toObject(), 
+    date: formattedDate,  
+    buyerGstNo: refUser.gstnum,
+    buyerAddress: refUser.address,
+    supplierName: supplier.username,
+    supplierGstNo: supplier.gstNum,
+    supplierAddress: supplier.address
+  };
+
+  res.status(200).send(pdfData);
+} catch (error) {
+  console.log(error);
+}
+};
+
+
+
 module.exports = {
   addInvoice,
   getInvoices,
   invoiceCount,
   deleteInvoice,
+  pdfInvoice
 };

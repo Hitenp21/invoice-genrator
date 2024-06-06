@@ -19,8 +19,6 @@ export default function DashBoard({ activeItem, handleItemClick }) {
       .catch((error) => {
         console.log(error);
       });
-
-      console.log("abc")
   },[data]);
 
   return (

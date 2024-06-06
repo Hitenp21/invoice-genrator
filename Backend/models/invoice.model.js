@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const RefUser = require("./refUser.model");
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const invoiceSchema = new mongoose.Schema(
   {
@@ -47,14 +47,21 @@ const invoiceSchema = new mongoose.Schema(
     paymentStatus :{
       type:Boolean,
       default:false
-    }
+    },
+    invoiceNo: {
+      type: Number,
+      unique: true,
+    },
   },
   {
     timestamps : true,
   }
 );
 
-
+invoiceSchema.plugin(AutoIncrement, { 
+  inc_field: 'invoiceNo', 
+  start_seq: 202400 
+});
 
 const Invoice = mongoose.model("Invoice", invoiceSchema);
 
