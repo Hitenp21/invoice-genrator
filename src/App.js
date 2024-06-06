@@ -12,8 +12,8 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import api from "./api";
-import PdfInvoice from "./pdfInvoice";
-import { PDFViewer } from "@react-pdf/renderer";
+import SendEmail from "./pages/sendEmail";
+import ResetPassword from "./pages/resetpassword";
 
 const verifyToken = async (token) => {
   try {
@@ -38,9 +38,8 @@ function App() {
     const checkToken = async () => {
       const currentPath = window.location.pathname;
 
-      // Don't check token if the current path is "/signup"
-      if (currentPath === "/signup") return;
-
+      if (currentPath === "/signup" || currentPath === "/forgot-password" || currentPath === "/verify-otp") return;
+  
       if (!token || isTokenExpired()) {
         localStorage.removeItem("token");
         localStorage.removeItem("tokenExpiry");
@@ -48,17 +47,15 @@ function App() {
       } else {
         const isValid = await verifyToken(token);
         if (!isValid) {
-        //   navigate("/user");
-        // } else {
           localStorage.removeItem("token");
           localStorage.removeItem("tokenExpiry");
           navigate("/login");
         }
       }
     };
-
+  
     checkToken();
-
+  
     const intervalId = setInterval(() => {
       if (isTokenExpired()) {
         localStorage.removeItem("token");
@@ -66,7 +63,7 @@ function App() {
         navigate("/login");
       }
     }, 60000); // Check every minute
-
+  
     return () => clearInterval(intervalId);
   }, [token, navigate]);
 
@@ -82,6 +79,10 @@ function App() {
         <Route path="/user/*" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/forgot-password" element={<SendEmail />} />
+        <Route path="/verify-otp" element={<ResetPassword />} />
+
+
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </>

@@ -1,5 +1,5 @@
-import React, {useState } from "react";
-import "./Login.css"; 
+import React, { useState } from "react";
+import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api";
 import { toast } from "react-toastify";
@@ -32,7 +32,6 @@ function Login() {
 
       console.log(response);
       toast.success("Login successful!");
-
 
       navigator("/user/dashboard");
     } catch (error) {
@@ -67,7 +66,17 @@ function Login() {
               />
             </div>
             <div className="input-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">
+                Password
+                <div className="flex justify-end">
+                  <a
+                    className="text-blue-500 hover:underline"
+                    onClick={()=>navigator('/forgot-password')}
+                  >
+                    Forgot Password?
+                  </a>
+                </div>
+              </label>
               <input
                 type="password"
                 id="password"

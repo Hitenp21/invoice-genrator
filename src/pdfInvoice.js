@@ -5,7 +5,6 @@ import {
   View,
   Page,
   Document,
-  StyleSheet,
 } from "@react-pdf/renderer";
 import styles from "./pdfInvoiceStyle";
 

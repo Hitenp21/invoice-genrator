@@ -129,11 +129,36 @@ const logout = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  const  email  = req.query.email;
+  const  newPassword  = req.query.newPassword;
+
+  try {
+    const user = await User.findOne({email:email});
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
 module.exports = {
   login,
   logout,
   signup,
   updateUser,
   getUser,
+  updatePassword,
   getAllRefUserDAta,
 };
