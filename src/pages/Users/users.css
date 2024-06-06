@@ -1,0 +1,61 @@
+.user-header {
+  display: flex;
+  justify-content: space-between; /* Align items to the start and end of the container */
+}
+
+.btn-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+
+.user-btn {
+  width: 120px !important;
+  justify-content: end;
+}
+
+
+.user-class img {
+  height: 70px;
+  width: 70px;
+  margin: 1%;
+}
+
+.user-class {
+  width: 15%;
+  height: 15%;
+  margin: 1%;
+  padding: 1%;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.user-class:hover {
+  transform: scale(1.1); 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3); 
+}
+
+
+/* .modal-container{
+  width: 300px;
+}
+
+.model {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+} */
+
+span {
+  display: flex;
+  font-size: x-large;
+  margin: 2%;
+  /* padding: 1%; */
+  justify-content: flex-end;
+}
+
+.profile-save{
+  width: 98% !important;
+}

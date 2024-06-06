@@ -1,0 +1,28 @@
+.custom-popup {
+    width: 20%; /* Adjust the width as needed */
+    max-width: 600px; /* Optionally set a maximum width */
+  }
+  
+  .popup-content{
+    width:30% !important;
+    border-radius: 0.5rem;
+  }
+
+
+.date-picker-container {
+    display: flex;
+    align-items: center; /* Center align items vertically */
+  }
+  
+  .date-picker-container > * {
+    margin-right: 8px; /* Add space between elements */
+  }
+  
+  .date-picker-container > *:last-child {
+    margin-right: 0; /* Remove margin from the last element */
+  }
+  
+  .to {
+    margin: 0 4px;
+    margin-right: 8px; /* Add margin to separate the text */
+  }

@@ -1,0 +1,64 @@
+.product-header {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-container {
+  display: flex;
+  align-items: flex-end;
+}
+  
+.product-btn {
+  width: 120px !important; /* Adjust the width as needed */
+}
+
+.product-header{
+  display: flex;
+}
+  
+
+.popup-content{
+  /* width:30% !important; */
+  border-radius: 0.5rem;
+}
+
+
+.flex-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100%;
+  padding-bottom: 8px;
+  /* Ensure it takes up the full height of its container */
+}
+
+.center-button {
+  width: 150px !important; /* Adjust the width as needed */
+  text-align: center;
+  font-weight: 600;
+}
+
+
+.delete-product{
+  background-color: red;
+}
+
+.delete-product:hover{
+  background-color: rgb(169, 57, 57);
+}
+
+
+
+.product-class img {
+  height: 70px;
+  width: 70px;
+  margin: 1%;
+}
+
+.product-class {
+  width: 15%;
+  height: 15%;
+  margin: 1%;
+  padding: 1%;
+}

@@ -1,0 +1,66 @@
+/* header.css */
+
+/* Styles for the dashboard header */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+  }
+  
+  .dashboard-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .profile {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  /* Styles for the profile overlay */
+  .profile-overlay {
+    position: absolute;
+    top: calc(100% + 10px); /* Position below the profile button */
+    right: 0;
+    width: 300px; /* Adjust width as needed */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Ensure the overlay is above other content */
+  }
+  
+  /* Styles for the form inside the profile overlay */
+  .form-container {
+    padding: 20px;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    margin-top: 5px;
+  }
+  
+  /* Additional styles for form elements (optional) */
+  .form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  }
+  
+  .profile-btn {
+    padding: 8px !important;
+    width: 35% !important;
+  }
