@@ -67,6 +67,7 @@ const Users = () => {
   const funDelete = () =>{
     setIsDelete(!isDelete)
   }
+
   const handleDelete = (user) => {
     funDelete()
     setDeletedUser({ userName: user.username, id: user._id });
@@ -127,7 +128,7 @@ const handleConfirmDelete = async () => {
     });
     setIsEditing(false);
     setIsFormOpen(false);
-    funDelete();
+    setIsDelete(false);
   };
 
   const handleChange = (e) => {

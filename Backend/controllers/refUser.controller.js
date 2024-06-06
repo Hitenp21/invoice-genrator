@@ -67,8 +67,6 @@ const deleteRefUser = async (req, res) => {
   const id = req.params.id;
   const fromUser = req.userData.id;
 
-console.log("id",id)
-console.log("user",fromUser)
   try {
     const userId = (fromUser);
     const subUserId = (id);
