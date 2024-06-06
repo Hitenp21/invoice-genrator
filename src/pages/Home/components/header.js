@@ -84,24 +84,10 @@ export default function Header({ title }) {
   };
 
   const handleEdit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault(); 
     setIsEditing(true);
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    api
-      .put("/api/user/update", { formData })
-      .then((response) => {
-        toast.success("Profile Updated!");
-      })
-      .catch((err) => {
-        toast.error("Profile Not Updated. Please try again.");
-        console.log(err);
-      });
-    setIsEditing(false);
-    setIsProfileOpen(false);
-  };
 
   return (
     <div className="dashboard-header shadow-xl sticky top-0 z-10">
@@ -211,52 +197,7 @@ export default function Header({ title }) {
             </g>
           </g>
         </svg>
-        {false && (
-          <div className="profile-overlay form-container">
-            <form
-              ref={formRef}
-              onSubmit={handleSave}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <label className="form-label">
-                UserName
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={isEditing ? handleChange : undefined}
-                  className="form-input"
-                  disabled={!isEditing}
-                />
-              </label>
-              <label className="form-label">
-                Email
-                <input
-                  type="text"
-                  name="email"
-                  value={formData.email}
-                  onChange={isEditing ? handleChange : undefined}
-                  className="form-input"
-                  disabled={!isEditing}
-                />
-              </label>
-              {!isEditing ? (
-                <button
-                  type="button"
-                  className="profile-btn"
-                  onClick={handleEdit}
-                >
-                  Edit
-                </button>
-              ) : (
-                <button type="submit" className="profile-btn">
-                  Save
-                </button>
-              )}
-            </form>
-          </div>
-        )}
-
+      
         {isProfileOpen && (
           <Popup open={isProfileOpen} closeOnDocumentClick onClose={closePopup}>
             <div className="modal-overlay">

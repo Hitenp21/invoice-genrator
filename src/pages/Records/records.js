@@ -255,7 +255,7 @@ export default function Records() {
                     Delete
                   </Link>
                   <Link
-                    className="rounded-full font-medium p-3 text-red-500 hover:underline underline-offset-2"
+                    className="rounded-full font-medium p-3 text-blue-500 hover:underline underline-offset-2"
                     style={{
                       display: "flex",
                       justifyContent: "center",
@@ -440,11 +440,14 @@ export default function Records() {
           </div>
         ) : (
           <>
-          <div className="flex justify-end">
-            <button onClick={closePopup} className="w-auto h-10 mb-1 p-2 mr-10 bg-red-500 hover:bg-red-700">
-              Close
-            </button>
-          </div>
+            <div className="flex justify-end">
+              <button
+                onClick={closePopup}
+                className="w-auto h-10 mb-1 p-2 mr-10 bg-red-500 hover:bg-red-700"
+              >
+                Close
+              </button>
+            </div>
             <PDFViewer width="1000" height="650" className="app">
               <PdfInvoice data={pdfData} />
             </PDFViewer>
