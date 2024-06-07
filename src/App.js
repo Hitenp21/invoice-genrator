@@ -14,7 +14,7 @@ import Home from "./pages/Home";
 import api from "./api";
 import SendEmail from "./pages/sendEmail";
 import ResetPassword from "./pages/resetpassword";
-
+// require('dotenv').config()
 const verifyToken = async (token) => {
   try {
     const response = await api.post("/verify-token", { token });

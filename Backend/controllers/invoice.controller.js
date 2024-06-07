@@ -9,10 +9,11 @@ const addInvoice = async (req, res) => {
       const indianTimeZoneOffset = 330;
   
       // Convert the provided date to a Date object
-      const providedDate = new Date(date);
+      // const providedDate = new Date(date);
   
-      // Adjust the date based on the Indian time zone offset
-      const currentDate = new Date(providedDate.getTime() + indianTimeZoneOffset * 60000);
+      // // Adjust the date based on the Indian time zone offset
+      // const currentDate = new Date(providedDate.getTime() + indianTimeZoneOffset * 60000);
+      const currentDate = new Date(date);
   
       const filteredProducts = products.filter((product) => product.qty !== 0);
   

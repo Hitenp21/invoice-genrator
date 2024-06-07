@@ -5,58 +5,59 @@ const User = require("../models/user.model");
 
 const getPayment = async (req, res) => {
   try {
-
     const userId = req.userData.id;
     const user = await User.findById(userId).populate('subUser').exec();
 
     if (!user) {
       console.log('User not found');
-      return null;
+      return res.status(404).send('User not found');
     }
 
-    const refUserIds = user.subUser.map(subUser => subUser._id);
+    const refUserIds = user.subUser?.map(subUser => subUser._id);
+    let payments = [];
 
-    const payment = await RefUser.aggregate([
-      {
-        $match: { _id: { $in: refUserIds } }
-      },
-      {
-        $lookup: {
-          from: "invoices",
-          localField: "_id",
-          foreignField: "user",
-          as: "invoices",
+    if (user.subUser.length > 0) {
+      let refUsers = await RefUser.aggregate([
+        {
+          $match: { _id: { $in: refUserIds } }
         },
-      },
-      {
-        $project: {
-          _id: 1,
-          username: 1,
-          invoices: {
-            $function: {
-              body: `function(invoices) {
-                return invoices.sort((a, b) => b.date - a.date).map(invoice => ({
-                  _id: invoice._id,
-                  username: invoice.username,
-                  date: invoice.date,
-                  total: invoice.total,
-                  paymentStatus: invoice.paymentStatus
-                }));
-              }`,
-              args: ["$invoices"],
-              lang: "js",
-            },
+        {
+          $lookup: {
+            from: "invoices",
+            localField: "_id",
+            foreignField: "user",
+            as: "invoices",
           },
         },
-      },
-    ]);
+        {
+          $project: {
+            _id: 1,
+            username: 1,
+            invoices: 1,
+          },
+        },
+      ]);
 
-    res.status(200).json(payment);
+      // Sort and map the invoices in the application code
+      payments = refUsers.map(refUser => {
+        refUser.invoices = refUser.invoices.sort((a, b) => new Date(b.date) - new Date(a.date)).map(invoice => ({
+          _id: invoice._id,
+          username: invoice.username,
+          date: invoice.date,
+          total: invoice.total,
+          paymentStatus: invoice.paymentStatus,
+        }));
+        return refUser;
+      });
+    }
+
+    res.status(200).json(payments);
   } catch (error) {
     console.log(error);
-    res.status(500).send("internal server error!");
+    res.status(500).send("Internal server error!");
   }
 };
+
 
 const updatePaymentStatus = async (req, res) => {
   const invoiceId = req.params.id;

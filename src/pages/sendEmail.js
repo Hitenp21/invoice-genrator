@@ -16,7 +16,7 @@ const SendEmail = () => {
     const templateParams = {
       email: email,
       otp: otp,
-      reset_link: `http://192.168.226.194:3000/verify-otp?otp=${otp}&email=${encodeURIComponent(email)}`,
+      reset_link: `http://192.168.1.198:3000/verify-otp?otp=${otp}&email=${encodeURIComponent(email)}`,
     };
 
     emailjs
