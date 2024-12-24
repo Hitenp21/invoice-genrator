@@ -301,7 +301,7 @@ export default function Records() {
                             >
                               <th
                                 scope="row"
-                                className="py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                className="py-2 font-medium text-gray-500 whitespace-nowrap"
                               >
                                 <input type="text" value={item.name} readOnly />
                               </th>
