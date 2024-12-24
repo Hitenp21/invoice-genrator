@@ -96,27 +96,28 @@ export default function Invoice() {
       receivedPayment: invoiceData.receivedPayment,
       total: invoiceData.total,
     },
-    ...invoiceData.products.map((product) => ({
-      username: null,
-      date: null,
-      product: product.name,
-      dQty: product.dQty,
-      qty: product.qty,
-      price: product.price,
-      amount: product.amount,
-      subTotal: null,
-      gst: null,
-      tax: null,
-      remainingPayment: null,
-      receivedPayment: null,
-      total: null,
-    })),
+    ...(Array.isArray(invoiceData.products)
+    ? invoiceData.products.map((product) => ({
+        username: null,
+        date: null,
+        product: product.name,
+        dQty: product.dQty,
+        qty: product.qty,
+        price: product.price,
+        amount: product.amount,
+        subTotal: null,
+        gst: null,
+        tax: null,
+        remainingPayment: null,
+        receivedPayment: null,
+        total: null,
+      }))
+    : []),
   ];
 
 
 
   const onSave = () => {
-    console.log("frontend",invoiceData)
  
     api
       .post("/invoice", { invoiceData })
@@ -170,7 +171,7 @@ export default function Invoice() {
                   const searchTerm = document.querySelector(
                     'input[placeholder="Search..."]'
                   ).value;
-                  const filteredData = data.filter((item) =>
+                  const filteredData = data?.filter((item) =>
                     item.username
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
@@ -223,7 +224,7 @@ export default function Invoice() {
                 >
                   <th
                     scope="row"
-                    className="pl-6 pr-0 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    className="pl-6 pr-0 py-4 font-medium text-gray-500 whitespace-nowrap"
                   >
                     <input
                       type="text"
